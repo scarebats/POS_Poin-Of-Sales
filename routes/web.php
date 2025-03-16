@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\LevelController;
+use App\Http\Controllers\KategoriController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -22,6 +24,7 @@ Route::get('/', function () {
 });
 
 Route::get('/level', [LevelController::class, 'index']);
+Route::get('/kategori', [KategoriController::class, 'index']);
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
