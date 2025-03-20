@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\SalesController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,29 +20,31 @@ use App\Http\Controllers\KategoriController;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/',[WelcomeController::class,'index']);
 
-Route::get('/level', [LevelController::class, 'index']);
-Route::get('/kategori', [KategoriController::class, 'index']);
-Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/tambah', [UserController::class, 'tambah']);
-Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
-Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
-Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
-Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+// Route::get('/level', [LevelController::class, 'index']);
+// Route::get('/kategori', [KategoriController::class, 'index']);
+// Route::get('/user', [UserController::class, 'index']);
+// Route::get('/user/tambah', [UserController::class, 'tambah']);
+// Route::post('/user/tambah_simpan', [UserController::class, 'tambah_simpan']);
+// Route::get('/user/ubah/{id}', [UserController::class, 'ubah']);
+// Route::put('/user/ubah_simpan/{id}', [UserController::class, 'ubah_simpan']);
+// Route::get('/user/hapus/{id}', [UserController::class, 'hapus']);
 
-Route::prefix('category')->group(function () {
-    Route::get('/food-beverage', [ProductController::class, 'foodBeverage']);
-    Route::get('/beauty-health', [ProductController::class, 'beautyHealth']);
-    Route::get('/home-care', [ProductController::class, 'homeCare']);
-    Route::get('/baby-kid', [ProductController::class, 'babyKid']);
-});
+// Route::get('/', [HomeController::class, 'index'])->name('home');
 
-Route::get('/user/{id}/name/{name}', [UserController::class, 'show']);
+// Route::prefix('category')->group(function () {
+//     Route::get('/food-beverage', [ProductController::class, 'foodBeverage']);
+//     Route::get('/beauty-health', [ProductController::class, 'beautyHealth']);
+//     Route::get('/home-care', [ProductController::class, 'homeCare']);
+//     Route::get('/baby-kid', [ProductController::class, 'babyKid']);
+// });
 
-Route::get('/sales', [SalesController::class, 'index'])->name('sales');
+// Route::get('/user/{id}/name/{name}', [UserController::class, 'show']);
+
+// Route::get('/sales', [SalesController::class, 'index'])->name('sales');
 
