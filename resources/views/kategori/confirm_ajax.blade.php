@@ -1,14 +1,12 @@
 @empty($kategori)
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <!-- Modal Header -->
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Kesalahan</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                <button type="button" class="close" data-dismiss="modal" aria- label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
-
-            <!-- Modal body -->
             <div class="modal-body">
                 <div class="alert alert-danger">
                     <h5><i class="icon fas fa-ban"></i> Kesalahan!!!</h5>
@@ -19,19 +17,16 @@
         </div>
     </div>
 @else
+
     <form action="{{ url('/kategori/' . $kategori->kategori_id . '/delete_ajax') }}" method="POST" id="form-delete">
         @csrf
         @method('DELETE')
         <div id="modal-master" class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
-                <!-- Modal Header -->
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data Kategori</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                            aria-hidden="true">&times;</span></button>
+                    <h5 class="modal-title" id="exampleModalLabel">Hapus Data kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria- label="Close"><span aria-hidden="true">&times;</span></button>
                 </div>
-
-                <!-- Modal body -->
                 <div class="modal-body">
                     <div class="alert alert-warning">
                         <h5><i class="icon fas fa-ban"></i> Konfirmasi !!!</h5>
@@ -39,17 +34,16 @@
                     </div>
                     <table class="table table-sm table-bordered table-striped">
                         <tr>
-                            <th class="text-right col-3">Kode :</th>
-                            <td class="col-9">{{ $kategori->kategori_kode }}</td>
+                            <th class="text-right col-3">kategori Kode :</th>
+                            <td class="col-9">{{$kategori->kategori_kode }}</td>
                         </tr>
+
                         <tr>
-                            <th class="text-right col-3">Nama :</th>
-                            <td class="col-9">{{ $kategori->kategori_nama }}</td>
+                            <th class="text-right col-3">kategori Nama :</th>
+                            <td class="col-9">{{$kategori->kategori_nama }}</td>
                         </tr>
                     </table>
                 </div>
-
-                <!-- Modal footer -->
                 <div class="modal-footer">
                     <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                     <button type="submit" class="btn btn-primary">Ya, Hapus</button>
@@ -58,15 +52,15 @@
         </div>
     </form>
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $("#form-delete").validate({
                 rules: {},
-                submitHandler: function(form) {
+                submitHandler: function (form) {
                     $.ajax({
                         url: form.action,
                         type: form.method,
                         data: $(form).serialize(),
-                        success: function(response) {
+                        success: function (response) {
                             if (response.status) {
                                 $('#myModal').modal('hide');
                                 Swal.fire({
@@ -74,10 +68,10 @@
                                     title: 'Berhasil',
                                     text: response.message
                                 });
-                                $('#table_kategori').DataTable().ajax.reload();
+                                dataKategori.ajax.reload();
                             } else {
                                 $('.error-text').text('');
-                                $.each(response.msgField, function(prefix, val) {
+                                $.each(response.msgField, function (prefix, val) {
                                     $('#error-' + prefix).text(val[0]);
                                 });
                                 Swal.fire({
@@ -91,14 +85,14 @@
                     return false;
                 },
                 errorElement: 'span',
-                errorPlacement: function(error, element) {
+                errorPlacement: function (error, element) {
                     error.addClass('invalid-feedback');
                     element.closest('.form-group').append(error);
                 },
-                highlight: function(element, errorClass, validClass) {
+                highlight: function (element, errorClass, validClass) {
                     $(element).addClass('is-invalid');
                 },
-                unhighlight: function(element, errorClass, validClass) {
+                unhighlight: function (element, errorClass, validClass) {
                     $(element).removeClass('is-invalid');
                 }
             });

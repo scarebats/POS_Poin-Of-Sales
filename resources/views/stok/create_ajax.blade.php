@@ -1,60 +1,74 @@
-<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+<form action="{{ url('/stok/ajax') }}" method="POST" id="form-tambah">
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data User</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
-                        aria-hidden="true">&times;</span></button>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Stok Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
             </div>
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Level Pengguna</label>
-                    <select name="level_id" id="level_id" class="form-control" required>
-                        <option value="">- Pilih Level -</option>
-                        @foreach($level as $l)
-                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
+                    <label for="barang_id">Pilih Barang</label>
+                    <select class="form-control" id="barang_id" name="barang_id" required>
+                        <option value="">-- Pilih Barang --</option>
+                        @foreach ($barang as $item)
+                            <option value="{{ $item->barang_id }}">
+                                {{ $item->barang_nama }}
+                            </option>
                         @endforeach
                     </select>
-                    <small id="error-level_id" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input value="" type="text" name="username" id="username" class="form-control" required>
-                    <small id="error-username" class="error-text form-text text-danger"></small>
+                    <label for="barang_id">Pilih User</label>
+                    <select class="form-control" id="user_id" name="user_id" required>
+                        <option value="">-- Pilih User --</option>
+                        @foreach ($user as $item)
+                            <option value="{{ $item->user_id }}">
+                                {{ $item->username }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Nama</label>
-                    <input value="" type="text" name="nama" id="nama" class="form-control" required>
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
+                    <label for="barang_id">Pilih Supplier</label>
+                    <select class="form-control" id="supplier_id" name="supplier_id" required>
+                        <option value="">-- Pilih Supplier --</option>
+                        @foreach ($supplier as $item)
+                            <option value="{{ $item->supplier_id }}">
+                                {{ $item->supplier_nama }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="form-group">
-                    <label>Password</label>
-                    <input value="" type="password" name="password" id="password" class="form-control" required>
-                    <small id="error-password" class="error-text form-text text-danger"></small>
+                    <label for="stok_jumlah">Jumlah Stok</label>
+                    <input type="text" class="form-control" id="stok_jumlah" name="stok_jumlah">
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
             </div>
         </div>
     </div>
 </form>
+
 <script>
+
     $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                level_id: { required: true, number: true },
-                username: { required: true, minlength: 3, maxlength: 20 },
-                nama: { required: true, minlength: 3, maxlength: 100 },
-                password: { required: true, minlength: 6, maxlength: 20 }
+                barang_id: { required: true },
+                user_id:{ required: true },
+                supplier_id: { required: true },
+                stok_jumlah: { required: true, number: true, min:1, max: 10000 },
             },
             submitHandler: function (form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
-                    method: "POST",
                     data: $(form).serialize(),
                     success: function (response) {
                         if (response.status) {
@@ -64,7 +78,7 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            dataUser.ajax.reload();
+                            dataStok.ajax.reload();
                         } else {
                             $('.error-text').text('');
                             $.each(response.msgField, function (prefix, val) {

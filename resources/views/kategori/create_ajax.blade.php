@@ -2,30 +2,23 @@
     @csrf
     <div id="modal-master" class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <!-- Modal Header -->
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Tambah Data Kategori</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Tambah Data kategori</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
                         aria-hidden="true">&times;</span></button>
             </div>
-
-            <!-- Modal body -->
             <div class="modal-body">
                 <div class="form-group">
-                    <label>Kode</label>
+                    <label>Kode kategori</label>
                     <input value="" type="text" name="kategori_kode" id="kategori_kode" class="form-control" required>
-
-                    <small id="error-kode" class="error-text form-text text-danger"></small>
+                    <small id="error-kategori-kode" class="error-text form-text text-danger"></small>
                 </div>
                 <div class="form-group">
-                    <label>Nama</label>
+                    <label>Nama kategori</label>
                     <input value="" type="text" name="kategori_nama" id="kategori_nama" class="form-control" required>
-
-                    <small id="error-nama" class="error-text form-text text-danger"></small>
-                </div>                
+                    <small id="error-kategori-kode" class="error-text form-text text-danger"></small>
+                </div>
             </div>
-
-            <!-- Modal footer -->
             <div class="modal-footer">
                 <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
                 <button type="submit" class="btn btn-primary">Simpan</button>
@@ -34,26 +27,19 @@
     </div>
 </form>
 <script>
-    $(document).ready(function() {
+    
+    $(document).ready(function () {
         $("#form-tambah").validate({
             rules: {
-                kode: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 20
-                },
-                nama: {
-                    required: true,
-                    minlength: 3,
-                    maxlength: 100
-                },
+                kategori_kode: { required: true, minlength:3,maxlength:10 },
+                kategori_name: { required: true, minlength: 3, maxlength: 100 },
             },
-            submitHandler: function(form) {
+            submitHandler: function (form) {
                 $.ajax({
                     url: form.action,
                     type: form.method,
                     data: $(form).serialize(),
-                    success: function(response) {
+                    success: function (response) {
                         if (response.status) {
                             $('#myModal').modal('hide');
                             Swal.fire({
@@ -61,11 +47,10 @@
                                 title: 'Berhasil',
                                 text: response.message
                             });
-                            // dataKategori.ajax.reload();
-                            $('#table_kategori').DataTable().ajax.reload();
+                            dataKategori.ajax.reload();
                         } else {
                             $('.error-text').text('');
-                            $.each(response.msgField, function(prefix, val) {
+                            $.each(response.msgField, function (prefix, val) {
                                 $('#error-' + prefix).text(val[0]);
                             });
                             Swal.fire({
@@ -79,14 +64,14 @@
                 return false;
             },
             errorElement: 'span',
-            errorPlacement: function(error, element) {
+            errorPlacement: function (error, element) {
                 error.addClass('invalid-feedback');
                 element.closest('.form-group').append(error);
             },
-            highlight: function(element, errorClass, validClass) {
+            highlight: function (element, errorClass, validClass) {
                 $(element).addClass('is-invalid');
             },
-            unhighlight: function(element, errorClass, validClass) {
+            unhighlight: function (element, errorClass, validClass) {
                 $(element).removeClass('is-invalid');
             }
         });
