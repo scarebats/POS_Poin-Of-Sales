@@ -11,6 +11,7 @@ class AuthController extends Controller
         }
         return view('auth.login');
     }
+
     public function postlogin(Request $request)
     {
         if ($request->ajax() || $request->wantsJson()) {
@@ -19,8 +20,7 @@ class AuthController extends Controller
                 return response()->json([
                     'status' => true,
                     'message' => 'Login Berhasil',
-                    'redirect' => url('/')
-
+                    'redirect' => url('/profil/profil_user')
                 ]);
             }
             return response()->json([

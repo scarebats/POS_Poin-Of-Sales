@@ -39,10 +39,10 @@
         <!-- Add icons to the links using the .nav-icon class
              with font-awesome or any other icon font library -->
         <li class="nav-item">
-          <a href="{{ url('/')}}" class="nav-link {{ ($activeMenu == 'dashboard') ? 'active' : ''}} ">
+          <a href="{{ url('/profil')}}" class="nav-link {{ ($activeMenu == 'profil') ? 'active' : ''}} ">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
-              Dashboard
+              Profil
             </p>
           </a>
         </li>

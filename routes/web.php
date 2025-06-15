@@ -5,9 +5,10 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\LevelController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\UserController;
-use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\ProfilController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\WelcomeController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,11 +27,16 @@ Route::get('login', [AuthController::class, 'login'])->name('login');
 Route::post('login', [AuthController::class, 'postlogin']);
 Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
 
-// Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth'])->group(function () {
     Route::get('/', [WelcomeController::class, 'index']);
+    Route::group(['prefix' => 'profil'], function () {
+        Route::get('/', [ProfilController::class, 'index']);
+        Route::get('/edit_foto', [ProfilController::class, 'edit_foto']);
+        Route::post('/update_foto', [ProfilController::class, 'update_foto']);
+    });
 
     // Grup route khusus Administrator (role ADM)
-    // Route::middleware(['authorize:ADM'])->group(function () {
+    Route::middleware(['authorize:ADM'])->group(function () {
         Route::group(['prefix' => 'level'], function () {
             Route::get('/', [LevelController::class, 'index']);
             Route::post('/list', [LevelController::class, 'list']);
@@ -71,10 +77,10 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/export_excel', [UserController::class, 'export_excel']);
             Route::get('/export_pdf', [UserController::class, 'export_pdf']);
         });
-    // });
+    });
 
-    // // Grup route untuk user dengan role ADM (Administrator) atau MNG (Manager)
-    // Route::middleware(['authorize:ADM,MNG'])->group(function () {
+    // Grup route untuk user dengan role ADM (Administrator) atau MNG (Manager)
+    Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']);
             Route::get('/list', [BarangController::class, 'list']);
@@ -163,5 +169,5 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/export_pdf', [StokController::class, 'export_pdf']);
         });
         
-//     });
-// });
+    });
+});
