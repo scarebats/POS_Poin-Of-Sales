@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\UserModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Hash;
 use Yajra\DataTables\DataTables;
 use App\Models\LevelModel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class UserController extends Controller
 {
@@ -406,5 +407,19 @@ class UserController extends Controller
         exit;
     }
  
+    public function export_pdf()
+    {
+        $user = UserModel::select('level_id', 'username', 'nama')
+            ->orderBy('level_id')
+            ->orderBy('username')
+            ->with('level')
+            ->get();
+        $pdf = PDF::loadview('user.export_pdf', ['user' => $user]);
+        $pdf->setPaper('A4', 'potrait');
+        $pdf->setOption("isRemoteEnabled", true);
+        $pdf->render();
+
+        return $pdf->stream('Data User ' . date('Y-m-d H:i:s') . '.pdf');
+    }
 
 }
