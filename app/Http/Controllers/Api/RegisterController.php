@@ -11,37 +11,42 @@ class RegisterController extends Controller
 {
     public function __invoke(Request $request)
     {
-        //set validation
+        // Validasi input
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            'nama' => 'required',
+            'nama'     => 'required',
             'password' => 'required',
-            'level_id' => 'required'
+            'level_id' => 'required|numeric',
+            'image'    => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         if ($validator->fails()) {
             return response()->json($validator->errors(), 422);
         }
 
-        //create user
+        // Upload gambar
+        $image = $request->file('image');
+        $image->store('images', 'public');
+
+        // Simpan user
         $user = UserModel::create([
-            'username' => $request->username,
-            'nama' => $request->nama,
-            'password' => bcrypt($request->password),
-            'level_id' => $request->level_id
+            'username'  => $request->username,
+            'nama'      => $request->nama,
+            'password'  => bcrypt($request->password),
+            'level_id'  => $request->level_id,
+            'image'     => $image->hashName()
         ]);
 
-        //return response JSON user is created
         if ($user) {
             return response()->json([
                 'success' => true,
-                'user' => $user
+                'user'    => $user
             ], 201);
         }
 
-        //return JSON process failed
         return response()->json([
             'success' => false,
+            'message' => 'Gagal menyimpan data user'
         ], 409);
     }
 }
