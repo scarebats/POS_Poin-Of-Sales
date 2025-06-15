@@ -354,5 +354,57 @@ class UserController extends Controller
         }
     }
 
+    public function export_excel()
+    {
+        $supplier = UserModel::select('user_id','level_id','username','nama','password')
+                    ->orderBy('user_id')
+                    ->get();
+
+        //load library excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'user_id');
+        $sheet->setCellValue('C1', 'level_id');
+        $sheet->setCellValue('D1', 'username');        
+        $sheet->setCellValue('E1','nama'); 
+        $sheet->setCellValue('F1','password'); 
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+        
+        $no =1;
+        $baris = 2;
+        foreach ($supplier as $value) {
+            $sheet->setCellValue('A'.$baris, $no++);
+            $sheet->setCellValue('B'.$baris, $value->user_id);
+            $sheet->setCellValue('C'.$baris, $value->level_id);
+            $sheet->setCellValue('D'.$baris, $value->username);
+            $sheet->setCellValue('E'.$baris, $value->nama);
+            $sheet->setCellValue('F'.$baris, $value->password);
+            $baris++;
+            $no++;
+        }
+        foreach (range('A', 'F') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data User');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data User '. date('Y-m-d H:i:s') .'.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.$filename.'"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
+    }
+ 
 
 }

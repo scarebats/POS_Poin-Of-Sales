@@ -48,32 +48,6 @@ class LevelController extends Controller
         ]);
     }
 
-    // Mengambil data level dalam bentuk JSON untuk DataTables
-    // public function list(Request $request)
-    // {
-    //     $level = LevelModel::select('level_id', 'level_kode', 'level_nama');
-
-    //     // if ($request->level_id) {
-    //     //     $level->where('level_id', $request->level_id);
-    //     // }
-
-    //     return DataTables::of($level)
-    //         ->addIndexColumn() // Menambahkan kolom index / no urut (default: DT_RowIndex)
-    //         ->addColumn('aksi', function ($level) {
-    //             $btn = '<a href="' . url('/level/' . $level->level_id) . '" class="btn btn-info btn-sm">Detail</a> ';
-    //             $btn .= '<a href="' . url('/level/' . $level->level_id . '/edit') . '" class="btn btn-warning btn-sm">Edit</a> ';
-    //             $btn .= '<form class="d-inline-block" method="POST" action="' . url('/level/' . $level->level_id) . '">'
-    //                 . csrf_field()
-    //                 . method_field('DELETE')
-    //                 . '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Apakah Anda yakin menghapus data ini?\');">Hapus</button>
-    //             </form>';
-
-    //             return $btn;
-    //         })
-    //         ->rawColumns(['aksi']) // Memberitahu bahwa kolom aksi berisi HTML
-    //         ->make(true);
-    // }
-
     public function list(Request $request)
     {
         $level = LevelModel::select('level_id', 'level_kode', 'level_nama');
@@ -121,101 +95,6 @@ class LevelController extends Controller
             'activeMenu' => $activeMenu
         ]);
     }
-
-    // Menyimpan data level baru
-    public function store(Request $request)
-    {
-        $request->validate([
-            'level_kode' => 'required|string|max:10|unique:m_level,level_kode',
-            'level_nama' => 'required|string|max:100'
-        ]);
-
-        LevelModel::create([
-            'level_kode' => $request->level_kode,
-            'level_nama' => $request->level_nama
-        ]);
-
-        return redirect('/level')->with('success', 'Data level berhasil disimpan');
-    }
-
-    // Menampilkan detail level
-    public function show(string $id)
-    {
-        $level = LevelModel::find($id);
-
-        $breadcrumb = (object) [
-            'title' => 'Detail Level',
-            'list' => ['Home', 'Level', 'Detail']
-        ];
-
-        $page = (object) [
-            'title' => 'Detail Level'
-        ];
-
-        $activeMenu = 'level';
-
-        return view('level.show', [
-            'breadcrumb' => $breadcrumb,
-            'page' => $page,
-            'level' => $level,
-            'activeMenu' => $activeMenu
-        ]);
-    }
-
-    // Menampilkan halaman form edit level
-    public function edit(string $id)
-    {
-        $level = LevelModel::find($id);
-
-        $breadcrumb = (object) [
-            'title' => 'Edit Level',
-            'list' => ['Home', 'Level', 'Edit']
-        ];
-
-        $page = (object) [
-            'title' => 'Edit Level'
-        ];
-
-        $activeMenu = 'level'; // Set menu yang sedang aktif
-
-        return view('level.edit', [
-            'breadcrumb' => $breadcrumb,
-            'page' => $page,
-            'level' => $level,
-            'activeMenu' => $activeMenu
-        ]);
-    }
-
-    // Menyimpan perubahan data level
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-            'level_kode' => 'required|string|max:10|unique:m_level,level_kode',
-            'level_nama' => 'required|string|max:100'
-        ]);
-
-        LevelModel::find($id)->update([
-            'level_kode' => $request->level_kode,
-            'level_nama' => $request->level_nama
-        ]);
-
-        return redirect('/level')->with('success', 'Data level berhasil diubah');
-    }
-
-    // Menghapus data level
-    public function destroy(string $id)
-    {
-        $level = LevelModel::find($id);
-
-        if (!$level) {
-            return redirect('/level')->with('error', 'Data level tidak ditemukan');
-        }
-
-        $level->delete();
-
-        return redirect('/level')->with('success', 'Data level berhasil dihapus');
-    }
-
     public function create_ajax()
     {
         return view('level.create_ajax');
@@ -385,5 +264,52 @@ class LevelController extends Controller
                 ]);
             }
         }
+    }
+
+    public function export_excel()
+    {
+        $barang = LevelModel::select('level_id', 'level_kode', 'level_nama')
+            ->orderBy('level_id')
+            ->get();
+
+        //load library excel
+        $spreadsheet = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Kode level');
+        $sheet->setCellValue('C1', 'Nama level');
+
+
+        $sheet->getStyle('A1:C1')->getFont()->setBold(true);
+
+        $no = 1;
+        $baris = 2;
+        foreach ($barang as $value) {
+            $sheet->setCellValue('A' . $baris, $no++);
+            $sheet->setCellValue('B' . $baris, $value->level_kode);
+            $sheet->setCellValue('C' . $baris, $value->level_nama);
+            $baris++;
+            $no++;
+        }
+        foreach (range('A', 'C') as $columnID) {
+            $sheet->getColumnDimension($columnID)->setAutoSize(true);
+        }
+
+        $sheet->setTitle('Data Level');
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $filename = 'Data Level ' . date('Y-m-d H:i:s') . '.xlsx';
+
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+        header('Cache-Control: max-age=1');
+        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        header('Pragma: public');
+
+        $writer->save('php://output');
+        exit;
     }
 }

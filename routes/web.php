@@ -49,8 +49,9 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/show/{id}', [LevelController::class, 'show']);
             Route::get('/import', [LevelController::class, 'import']);
             Route::post('/import_ajax', [LevelController::class, 'import_ajax']);
+            Route::get('/export_excel', [LevelController::class, 'export_excel']);
         });
-        // Route::group(['prefix' => 'user'], function () {
+        Route::group(['prefix' => 'user'], function () {
             Route::get('/', [UserController::class, 'index']);
             Route::post('/list', [UserController::class, 'list']);
             Route::get('/create', [UserController::class, 'create']);
@@ -67,10 +68,11 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::delete('/{id}', [UserController::class, 'destroy']);
             Route::get('/import', [UserController::class, 'import']);
             Route::post('/import_ajax', [UserController::class, 'import_ajax']);
-    //     });
+            Route::get('/export_excel', [UserController::class, 'export_excel']);
+        });
     // });
 
-    // Grup route untuk user dengan role ADM (Administrator) atau MNG (Manager)
+    // // Grup route untuk user dengan role ADM (Administrator) atau MNG (Manager)
     // Route::middleware(['authorize:ADM,MNG'])->group(function () {
         Route::group(['prefix' => 'barang'], function () {
             Route::get('/', [BarangController::class, 'index']);
@@ -91,6 +93,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/import', [BarangController::class, 'import']);
             Route::post('/import_ajax', [BarangController::class, 'import_ajax']);
             Route::get('/{id}', [BarangController::class, 'show']);
+            Route::get('/export_excel', [BarangController::class, 'export_excel']);
         });
 
         Route::group(['prefix' => 'kategori'], function () {
@@ -111,6 +114,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/{id}', [KategoriController::class, 'show']);
             Route::get('/import', [KategoriController::class, 'import']);
             Route::post('/import_ajax', [KategoriController::class, 'import_ajax']);
+            Route::get('/export_excel', [KategoriController::class, 'export_excel']);
         });
 
         Route::group(['prefix' => 'supplier'], function () {
@@ -130,6 +134,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::delete('/{id}', [SupplierController::class, 'destroy']);
             Route::get('/import', [SupplierController::class, 'import']);
             Route::post('/import_ajax', [SupplierController::class, 'import_ajax']);
+            Route::get('/export_excel', [SupplierController::class, 'export_excel']);
         });
 
         Route::group(['prefix' => 'stok'], function () {
@@ -150,6 +155,7 @@ Route::get('logout', [AuthController::class, 'logout'])->middleware('auth');
             Route::get('/{id}', [StokController::class, 'show']);
             Route::get('/import', [StokController::class, 'import']);
             Route::post('/import_ajax', [StokController::class, 'import_ajax']);
+            Route::get('/export_excel', [StokController::class, 'export_excel']);
         });
         
 //     });
